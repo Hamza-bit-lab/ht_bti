@@ -499,4 +499,9 @@
             });
         });
     </script>
+
+
+    <div class="gitcheck">
+        this is git check code
+    </div>
 @endsection

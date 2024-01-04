@@ -67,6 +67,4 @@ class NotificationController extends Controller
 //        return response()->json(['location' => "/storage/$imgpath"]);*/
 //
 //    }
-
-
 }
