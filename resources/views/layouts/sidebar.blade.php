@@ -166,6 +166,12 @@
                                 <span>Notification</span>
                             </a>
                         </li>
+                        <li class="nav-item @yield('events-selected')">
+                            <a class="nav-link collapsed" href="{{ url('events') }}">
+                                <i class="fa-solid fa-bell"></i>
+                                <span>Events</span>
+                            </a>
+                        </li>
                 @else
                     <!-- Employee Dashboard -->
                     <li class="nav-item @yield('employee-dashboard-selected')">
@@ -416,6 +422,8 @@
                 input.click();
             }
         });
+        // $('#editEventDescription').val('ksdfgjd')
+        // tinymce.get('#editEventDescription').setContent('Your new value goes here');
     </script>
     @yield('js')
 </body>

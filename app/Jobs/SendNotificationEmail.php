@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\EventNotificationMail;
 use App\Models\Employee;
 use App\Mail\NotificationMail;
 use Illuminate\Bus\Queueable;
@@ -28,6 +29,17 @@ class SendNotificationEmail implements ShouldQueue
 
     public function handle()
     {
-        Mail::to($this->employee->email)->send(new NotificationMail($this->message, $this->employee, $this->subject));
+        try {
+            $activeEmployees = Employee::where('is_employed', 1)->get();
+
+            foreach ($activeEmployees as $employee) {
+                Mail::to($employee->email)->send(new EventNotificationMail($employee, 'Event Notification'));
+            }
+        } catch (\Exception $exception) {
+            // Log the exception to the Laravel log
+            \Log::error('Error sending event notification emails: ' . $exception->getMessage());
+            throw $exception;
+        }
     }
+
 }

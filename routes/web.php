@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\EmployeeDashboardController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\EventController;
 use App\Mail\NotificationMail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -113,6 +114,13 @@ Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::get('notifications', [NotificationController::class, 'notifications'])->name('notifications');
     Route::post('send-notifications', [NotificationController::class, 'sendNotifications'])->name('send.notifications');
 
+
+    // Events Routes
+    Route::get('events', [EventController::class, 'event'])->name('events');
+    Route::get('events/get', [EventController::class, 'getAllEvents'])->name('get-events');
+    Route::post('events/store', [EventController::class, 'storeEvents'])->name('save-event');
+    Route::put('events/update/{id}', [EventController::class, 'updateEvent'])->name('edit-event');
+    Route::delete('events/delete/{id}', [EventController::class, 'deleteEvent'])->name('delete-event');
 
 });
 
