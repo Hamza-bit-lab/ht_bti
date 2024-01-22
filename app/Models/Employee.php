@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,8 +14,5 @@ class Employee extends Model
     {
         return $this->hasMany(Interview::class, 'interviewer');
     }
-    public function getJoiningDateAttribute($value)
-    {
-        return Carbon::parse($value)->format('d M, Y');
-    }
+
 }

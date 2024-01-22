@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDobToUsersTable extends Migration
+class AddBirthdayToEmployeesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddDobToUsersTable extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
-                $table->date('dob')->nullable()->after('is_employed');
-            });
+            $table->date('birthday')->nullable()->after('is_employed');
+        });
     }
 
     /**
@@ -26,7 +26,7 @@ class AddDobToUsersTable extends Migration
     public function down()
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn('dob');
+            $table->dropColumn('birthday');
         });
     }
 }

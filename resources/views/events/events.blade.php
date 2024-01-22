@@ -89,19 +89,14 @@
                 selectable: true,
                 height: '675px',
 
-                // When an Event is Clicked
                 eventClick: function (info) {
-                    // Set values in the edit modal for editing
-                    console.log('Event clicked:', info.event);
-
                     var title = info.event.title;
                     var description = info.event.extendedProps ? info.event.extendedProps.description || '' : '';
-                    console.log('Title:', title);
-                    console.log('Description:', description);
 
                     $('#editEventTitle').val(title);
                     tinymce.get('editEventDescription').setContent(description);
                     $('#editEventModal').modal('show');
+
                     $('#updateEventBtn').off('click').on('click', function () {
                         var title = $('#editEventTitle').val();
                         var description = $('#editEventDescription').val();
@@ -117,7 +112,7 @@
                         }
 
                         var id = info.event.id;
-                        // Perform AJAX request to update the event
+
                         $.ajax({
                             url: "{{ route('edit-event', '') }}/" + id,
                             type: 'PUT',
@@ -128,7 +123,6 @@
                                 title: title,
                                 description: description,
                                 start: info.event.startStr
-                                // Add any other form fields you need
                             },
                             success: function (response) {
                                 calendar.refetchEvents();
@@ -153,7 +147,6 @@
                         });
                     });
 
-                    // Add a delete button in the edit modal
                     $('#deleteEventBtn').off('click').on('click', function () {
                         swal({
                             title: "Are you sure?",
@@ -167,7 +160,7 @@
                         }).then((confirmed) => {
                             if (confirmed) {
                                 var id = info.event.id;
-                                // Perform AJAX request to delete the event
+
                                 $.ajax({
                                     url: "{{ route('delete-event', '') }}/" + id,
                                     type: 'DELETE',
@@ -200,23 +193,20 @@
                     });
                 },
 
-                // New Event
                 select: function (info) {
-                    // Open the modal when selecting a date
                     $('#eventModal').modal('show');
+                    $('#eventTitle').val('');
+                    tinymce.get('eventDescription').setContent('');
 
                     $('#saveEventBtn').off('click').on('click', function () {
                         var title = $('#eventTitle').val();
                         var description = $('#eventDescription').val();
 
-                        // Validate if title is not empty
                         if (!title) {
-                            // You can show an alert or handle the validation as needed
                             alert('Please enter a title for the event.');
                             return;
                         }
 
-                        // Perform AJAX request to save the event
                         $.ajax({
                             url: "{{ route('save-event') }}",
                             type: 'POST',
@@ -227,11 +217,10 @@
                                 title: title,
                                 description: description,
                                 start: info.startStr
-                                // Add any other form fields you need
                             },
                             success: function (response) {
                                 calendar.refetchEvents();
-                                $('#eventModal').modal('hide'); // Hide the modal after success
+                                $('#eventModal').modal('hide');
                                 swal({
                                     title: "Event Added!",
                                     text: " ",
@@ -252,8 +241,8 @@
                         });
                     });
                 }
-
             });
+
             calendar.render();
         });
 

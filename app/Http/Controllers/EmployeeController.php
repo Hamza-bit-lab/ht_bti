@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\User;
-use App\Http\Controllers\Controller;
+//use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -19,7 +21,7 @@ class EmployeeController extends Controller
 
     public function getEmployees(Request $request)
     {
-        $status = $request->input('status', 'active'); // Default to 'active' if not provided
+        $status = $request->input('status', 'active');
 
         $employees = Employee::query();
         if ($status === 'active') {
@@ -95,7 +97,7 @@ class EmployeeController extends Controller
         $employee->salary = $request->salary;
         $employee->degree = $request->degree;
         $employee->joining_date = $request->joining_date;
-        $employee->dob = $request->dob;
+        $employee->birthday = $request->birthday;
         $employee->contract_end_date = $request->contract_end_date;
 
         try {
@@ -129,7 +131,7 @@ class EmployeeController extends Controller
         $employee->salary = $request->salary;
         $employee->degree = $request->degree;
         $employee->joining_date = $request->joining_date;
-        $employee->dob = $request->dob;
+        $employee->birthday = $request->birthday;
         $employee->contract_end_date = $request->contract_end_date;
 
 
@@ -184,4 +186,143 @@ class EmployeeController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    private function getMonths()
+    {
+        return [
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December',
+        ];
+    }
+
+    private function getYearsRange()
+    {
+        $currentYear = now()->year;
+        $years = [];
+
+        for ($i = $currentYear - 100; $i <= $currentYear + 10; $i++) {
+            $years[$i] = $i;
+        }
+
+        // Set default value to 2024
+        $defaultYear = 2024;
+        $years = array_reverse($years, true);
+        $years[$defaultYear] = $defaultYear;
+
+        return $years;
+    }
+
+    public function checkEmployees()
+    {
+        $months = $this->getMonths();
+        $years = $this->getYearsRange();
+        return view('employee.check-employees', compact('months', 'years'));
+    }
+
+    public function getEmployeeEventsByFilter($filter, $selectedMonth, $selectedYear)
+    {
+        $employeeEvents = [];
+
+        if ($filter === 'joining_date') {
+            $employees = Employee::where('is_employed', true)
+                ->whereYear('joining_date', $selectedYear)
+                ->whereMonth('joining_date', $selectedMonth)
+                ->get();
+//            dd($employees);
+
+            foreach ($employees as $employee) {
+                $color = '#FFA500';
+                $employeeEvents[] = [
+                    'title' => $employee->name . "'s ",
+                    'start' => Carbon::parse($employee->joining_date)->format('Y-m-d'),
+                    'color' => $color,
+                ];
+            }
+        }
+        elseif ($filter === 'contract_end_date') {
+            $employees = Employee::where('is_employed', true)
+                ->whereYear('contract_end_date', $selectedYear)
+                ->get();
+
+            foreach ($employees as $employee) {
+                $color = '#A020F0';
+                $employeeEvents[] = [
+                    'title' => $employee->name . "'s Ends",
+                    'start' => Carbon::parse($employee->contract_end_date)->format('Y-m-d'),
+                    'color' => $color,
+                ];
+            }
+        }
+        elseif ($filter === 'birthday') {
+            $employees = Employee::where('is_employed', true)
+                ->whereRaw('DATE_FORMAT(birthday, "%m-%d") >= ?', [now()->format('m-d')])
+                ->get();
+            foreach ($employees as $employee) {
+                $color = '#008000';
+                $employeeEvents[] = [
+                    'title' => $employee->name . "'s",
+                    'start' => Carbon::parse($employee->birthday)->format('Y-m-d'),
+                    'color' => $color,
+                ];
+            }
+        }
+        elseif ($filter === 'anniversary') {
+            $employees = Employee::where('is_employed', true)->get();
+
+            foreach ($employees as $employee) {
+                $color = '#008000';
+                $anniversaryDate = Carbon::parse($employee->joining_date);
+                $today = now();
+                $anniversaryYear = $today->diff($anniversaryDate)->y;
+                $anniversaryYear++;
+                $adjustedAnniversaryDate = $anniversaryDate->year(now()->year);
+
+                if ($adjustedAnniversaryDate->isBetween(now(), now()->addMonths(11))) {
+                    $suffix = $this->getNumberSuffix($anniversaryYear);
+
+                    $employeeEvents[] = [
+                        'title' => $employee->name . "'s " . $anniversaryYear . $suffix,
+                        'start' => $adjustedAnniversaryDate->format('Y-m-d'),
+                        'color' => $color,
+                    ];
+                }
+            }
+        }
+        return $employeeEvents;
+    }
+    public function getEmployeeEvents(Request $request)
+    {
+        $filter = $request->input('filter', 'joining_date');
+        $selectedMonth = $request->input('month', now()->month);
+        $selectedYear = $request->input('year', now()->year);
+
+        $employeeEvents = $this->getEmployeeEventsByFilter($filter, $selectedMonth, $selectedYear);
+
+        return response()->json(['events' => $employeeEvents]);
+    }
+
+    public function getNumberSuffix($number) {
+        if ($number % 100 >= 11 && $number % 100 <= 13) {
+            return 'th';
+        }
+
+        switch ($number % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+
+
 }

@@ -46,11 +46,11 @@
                                 <th>Attendance ID</th>
                                 <th>Position</th>
                                 <th>Phone</th>
-                                <th>Joining Date</th>
+{{--                                <th>Joining Date</th>--}}
                                 <th>Interviewer</th>
                                 <th>Employed</th>
                                 <th>Birthday</th>
-                                <th>Work Anniversary</th>
+{{--                                <th>Work Anniversary</th>--}}
                                 <th>Contract Expiry Date</th>
                                 <th>Action</th>
                             </tr>
@@ -128,12 +128,11 @@
                     { data: 'attendance_id', name: 'attendance_id' },
                     { data: 'position', name: 'position' },
                     { data: 'phone', name: 'phone' },
-                    { data: 'joining_date', name: 'joining_date' },
                     { data: 'is_interviewer', name: 'is_interviewer' },
                     { data: 'is_employed', name: 'is_employed' },
                     {
-                        data: 'dob',
-                        name: 'dob',
+                        data: 'birthday',
+                        name: 'birthday',
                         render: function(data, type, row) {
                             if (!data) {
                                 return 'N/A';
@@ -141,57 +140,15 @@
 
                             var dob = new Date(data);
                             dob.setHours(0, 0, 0, 0);
-                            var today = new Date();
 
-                            if (dob.getMonth() === today.getMonth() && dob.getDate() === today.getDate()) {
-                                return '<span style="color: green; font-weight: bold">It\'s birthday today!</span>';
-                            }
+                            // Format the date as YYYY-MM-DD
+                            var formattedDOB = dob.toISOString().split('T')[0];
 
-                            var daysLeft = Math.ceil((dob.setFullYear(today.getFullYear()) - today) / (1000 * 60 * 60 * 24));
-
-                            if (daysLeft < 0) {
-                                var nextBirthday = new Date(today.getFullYear() + 1, dob.getMonth(), dob.getDate());
-                                nextBirthday.setHours(0, 0, 0, 0);
-                                daysLeft = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
-                            }
-
-
-                            return daysLeft + ' days left';
+                            return formattedDOB;
                         }
                     },
-                    {
-                        data: 'work_anniversary',
-                        name: 'work_anniversary',
-                        render: function(data, type, row) {
-                            var today = new Date();
-                            var joiningDate = new Date(row.joining_date);
-                            var workAnniversary = new Date(today.getFullYear(), joiningDate.getMonth(), joiningDate.getDate());
 
-                            // Set the time of today and workAnniversary to midnight for accurate comparison
-                            today.setHours(0, 0, 0, 0);
-                            workAnniversary.setHours(0, 0, 0, 0);
 
-                            if (today.getTime() === workAnniversary.getTime()) {
-                                var anniversaryCountToday = calculateAnniversaryCount(joiningDate, today);
-                                var ordinalSuffixToday = getOrdinalSuffix(anniversaryCountToday);
-                                return '<span style="color: green; font-weight: bold">It\'s ' + anniversaryCountToday + ordinalSuffixToday + ' anniversary today!</span>';
-                            }
-
-                            var daysLeft = Math.ceil((workAnniversary - today) / (1000 * 60 * 60 * 24));
-
-                            if (daysLeft < 0) {
-                                var nextAnniversary = new Date(today.getFullYear() + 1, joiningDate.getMonth(), joiningDate.getDate());
-                                nextAnniversary.setHours(0, 0, 0, 0);
-                                daysLeft = Math.ceil((nextAnniversary - today) / (1000 * 60 * 60 * 24));
-                            }
-
-                            var anniversaryCount = calculateAnniversaryCount(joiningDate, today);
-                            var ordinalSuffix = getOrdinalSuffix(anniversaryCount);
-                            var comingAnniversary = anniversaryCount + ordinalSuffix;
-
-                            return daysLeft + ' days left until ' + comingAnniversary + ' anniversary';
-                        }
-                    },
                     {
                         data: 'contract_end_date',
                         name: 'contract_end_date',

@@ -119,6 +119,13 @@
                         </a>
                     </li>
 
+                        <li class="nav-item @yield('employees-events-selected')">
+                            <a class="nav-link collapsed" href="{{ url('employee-events') }}">
+                                <i class="fas fa-users"></i>
+                                <span>Employees' Events</span>
+                            </a>
+                        </li>
+
                     <!-- Divider -->
                     <hr class="sidebar-divider">
 
@@ -160,6 +167,13 @@
                             <span>Holidays</span>
                         </a>
                     </li>
+
+                        <!-- Divider -->
+                        <hr class="sidebar-divider">
+
+                        <div class="sidebar-heading">
+                            Notifications and Emails
+                        </div>
                         <li class="nav-item @yield('notifications-selected')">
                             <a class="nav-link collapsed" href="{{ url('notifications') }}">
                                 <i class="fa-solid fa-bell"></i>
@@ -168,7 +182,7 @@
                         </li>
                         <li class="nav-item @yield('events-selected')">
                             <a class="nav-link collapsed" href="{{ url('events') }}">
-                                <i class="fa-solid fa-bell"></i>
+                                <i class="fa-solid fa-calendar-days"></i>
                                 <span>Events</span>
                             </a>
                         </li>

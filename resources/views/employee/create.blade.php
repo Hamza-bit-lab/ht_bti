@@ -86,10 +86,10 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="dob" class="col-sm-2 col-form-label">Birthday</label>
+                            <label for="birthday" class="col-sm-2 col-form-label">Birthday</label>
                             <div class="col-sm-10">
-                                <input type="date" name="dob" value="{{ now()->format('Y-m-d') }}" required
-                                       class="form-control" id="dob" value="{{ old('joining_date') }}">
+                                <input type="date" name="birthday" value="{{ now()->format('Y-m-d') }}" required
+                                       class="form-control" id="birthday" value="{{ old('birthday') }}">
                             </div>
                         </div>
                         <div class="row mb-3">

@@ -20,7 +20,7 @@ class CreateEmployeesTable extends Migration
             $table->text('email')->nullable();
             $table->text('phone')->nullable();
             $table->text('degree')->nullable();
-            $table->timestamp('joining_date')->nullable();
+            $table->date('joining_date')->nullable();
             $table->text('salary')->nullable();
             $table->integer('is_interviewer')->default(0);
             $table->timestamps();

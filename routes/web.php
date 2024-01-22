@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\EmployeeDashboardController;
 use App\Http\Controllers\NotificationController;
@@ -80,6 +81,10 @@ Route::middleware(['auth', 'role:hr'])->group(function () {
     Route::post('update-interviewer-status/{id}', [EmployeeController::class, 'updateInterviewerStatus']);
     Route::post('update-employee-status/{id}', [EmployeeController::class, 'updateEmployeeStatus']);
     Route::patch('update-attendance-id/{id}', [EmployeeController::class, 'updateAttendanceId']);
+    Route::get('get-employee-events', [EmployeeController::class, 'getEmployeeEvents'])->name('get-employee-events');
+    Route::get('employee-events', [EmployeeController::class, 'checkEmployees'])->name('employee-events');
+
+
 
     // Attendance Management
     Route::get('upload-attendance', [AttendanceController::class, 'uploadAttendance'])->name('upload-attendance');
